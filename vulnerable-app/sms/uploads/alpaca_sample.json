@@ -1,0 +1,32 @@
+[
+  {
+    "instruction": "Explain gravity in simple words.",
+    "input": "",
+    "output": "Gravity is the force that pulls objects toward the Earth."
+  },
+  {
+    "instruction": "What is machine learning?",
+    "input": "",
+    "output": "Machine learning is a way for computers to learn patterns from data and make predictions."
+  },
+  {
+    "instruction": "Summarize photosynthesis.",
+    "input": "",
+    "output": "Photosynthesis is the process by which plants use sunlight, water, and carbon dioxide to make food and release oxygen."
+  },
+  {
+    "instruction": "Translate to Hindi",
+    "input": "Hello, how are you?",
+    "output": "नमस्ते, आप कैसे हैं?"
+  },
+  {
+    "instruction": "Write one line on multimodal AI.",
+    "input": "",
+    "output": "Multimodal AI can understand and connect different types of data like text and images."
+  },
+  {
+    "instruction": "What is LoRA?",
+    "input": "",
+    "output": "LoRA is a parameter-efficient fine-tuning method that learns small low-rank updates instead of changing all model weights."
+  }
+]

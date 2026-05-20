@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Administration{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Administration Panel</h1>
+  <p>Manage users, student records, and system configuration.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">User Accounts</div>
+  {# VULN-07: Plain-text passwords displayed – no hashing #}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Username</th><th>Password</th><th>Role</th><th>Email</th><th>Full Name</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u['id'] }}</td>
+          <td class="mono-sm">{{ u['username'] }}</td>
+          <td class="mono-sm">{{ u['password'] }}</td>
+          <td>
+            <span class="badge {% if u['role'] == 'admin' %}badge-red{% elif u['role'] == 'faculty' %}badge-yellow{% else %}badge-green{% endif %}">
+              {{ u['role'] }}
+            </span>
+          </td>
+          <td>{{ u['email'] }}</td>
+          <td>{{ u['full_name'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Student Records</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Roll No</th><th>Name</th><th>National ID</th><th>DOB</th><th>GPA</th><th>Financial Aid</th></tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td class="mono-sm">{{ s['roll_no'] }}</td>
+          {# VULN-13: unescaped name #}
+          <td>{{ s['full_name'] | safe }}</td>
+          <td class="mono-sm">{{ s['national_id'] }}</td>
+          <td>{{ s['dob'] }}</td>
+          <td>{{ s['gpa'] }}</td>
+          <td class="text-sm">{{ s['financial_aid'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Application Logs</div>
+  {# VULN-09: Log injection – forged entries accepted, logs can be cleared #}
+  <div class="flex gap-4 mb-4 flex-wrap items-end">
+    <form method="POST" action="/admin/logs/inject" class="flex gap-3 flex-1 min-w-300">
+      <div class="form-group flex-1">
+        <label>Add Log Entry</label>
+        <input type="text" name="log_entry" placeholder="Enter log message...">
+      </div>
+      <button type="submit" class="btn btn-outline">Add Entry</button>
+    </form>
+    <form method="POST" action="/admin/logs/clear">
+      <button type="submit" class="btn btn-danger" onclick="return confirm('Clear all logs?')">Clear Logs</button>
+    </form>
+  </div>
+  <div class="log-panel">
+    {% for line in logs %}
+    <div class="log-line">
+      {# VULN-09: log lines rendered with | safe – injected HTML executes #}
+      {{ line | safe }}
+    </div>
+    {% else %}
+    <p class="log-empty">No log entries found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

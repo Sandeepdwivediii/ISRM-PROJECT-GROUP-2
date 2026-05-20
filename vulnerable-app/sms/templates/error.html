@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Error{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Something went wrong</h1>
+  <p>An unexpected error occurred. Please try again or contact the administrator.</p>
+</div>
+
+<div class="card">
+  {# VULN-08: Raw exception message and SQL query exposed to user #}
+  <div class="alert alert-error mb-0">
+    <strong>Error:</strong> {{ error }}
+  </div>
+  {% if query %}
+  <div class="code-block">{{ query }}</div>
+  {% endif %}
+</div>
+
+<a href="/dashboard" class="btn btn-primary">← Back to Dashboard</a>
+
+{% endblock %}

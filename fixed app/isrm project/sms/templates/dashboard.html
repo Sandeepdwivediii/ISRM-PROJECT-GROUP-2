@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Dashboard</h1>
+  <p>Welcome back, {{ session.full_name or session.username }}. Here's an overview of the system.</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-box">
+    <div class="stat-val">{{ students|length }}</div>
+    <div class="stat-label">Total Students</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val">3</div>
+    <div class="stat-label">Active Courses</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val">1</div>
+    <div class="stat-label">Faculty Members</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-val">AY 2024</div>
+    <div class="stat-label">Current Session</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Enrolled Students</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Full Name</th>
+          <th>GPA</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td><span class="mono-sm text-brand">{{ s['roll_no'] }}</span></td>
+          {# VULN-13: rendered without escaping – stored XSS #}
+          <td>{{ s['full_name'] | safe }}</td>
+          <td>{{ s['gpa'] }}</td>
+          <td><span class="badge badge-green">Active</span></td>
+          <td>
+            <a href="/student/{{ s['id'] }}" class="btn btn-outline btn-sm">View Profile</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

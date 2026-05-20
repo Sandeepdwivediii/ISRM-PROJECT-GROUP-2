@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}System Logs{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>System Logs</h1>
+  <p>Application activity and audit trail.</p>
+</div>
+
+<div class="card">
+  <div class="card-title card-title-row">
+    <span>Log Entries</span>
+    <form method="POST" action="/admin/logs/clear" onsubmit="return confirm('This will permanently delete all log entries. Continue?')">
+      <button type="submit" class="btn btn-danger btn-sm">Clear Logs</button>
+    </form>
+  </div>
+
+  <form method="POST" action="/admin/logs/inject" class="flex gap-3 mb-4">
+    <div class="form-group flex-1">
+      <label>Add Manual Log Entry</label>
+      {# VULN-09: raw user input written directly to log file without sanitization #}
+      <input type="text" name="log_entry" placeholder="Enter log message to record...">
+    </div>
+    <button type="submit" class="btn btn-outline">Add</button>
+  </form>
+
+  <div class="log-panel log-panel-tall">
+    {% for line in logs %}
+    <div class="log-line">
+      {{ line | safe }}
+    </div>
+    {% else %}
+    <p class="log-empty">No log entries found.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

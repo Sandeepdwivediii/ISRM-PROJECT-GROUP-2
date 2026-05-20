@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Student Search</h1>
+  <p>Search students by name or roll number.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Search</div>
+  {# VULN-02: input is concatenated directly into raw SQL query #}
+  <form method="GET" action="/search" class="flex gap-4 items-end flex-wrap">
+    <div class="form-group flex-1 min-w-220">
+      <label>Name or Roll Number</label>
+      <input type="text" name="q" value="{{ query }}" placeholder="e.g. John Smith or CS2021001">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    {% if query %}
+    <a href="/search" class="btn btn-outline">Clear</a>
+    {% endif %}
+  </form>
+</div>
+
+{% if error %}
+{# VULN-08: raw DB error with SQL query shown to user #}
+<div class="alert alert-error">
+  An error occurred while processing your request. Please try again.<br>
+  <small class="mono text-xs">{{ error }}</small>
+</div>
+{% endif %}
+
+{% if results %}
+<div class="card">
+  <div class="card-title">Results — {{ results|length }} student(s) found</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Roll No</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>GPA</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+        <tr>
+          <td><span class="mono-sm text-brand">{{ r['roll_no'] }}</span></td>
+          {# VULN-13: XSS – rendered without escaping #}
+          <td>{{ r['full_name'] | safe }}</td>
+          <td>{{ r['email'] }}</td>
+          <td>{{ r['gpa'] }}</td>
+          <td>
+            <a href="/student/{{ r['id'] }}" class="btn btn-outline btn-sm">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% elif query %}
+<div class="alert alert-info">No students found matching "<strong>{{ query }}</strong>".</div>
+{% endif %}
+
+{% endblock %}

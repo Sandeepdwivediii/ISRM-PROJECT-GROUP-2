@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>University SMS – Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3f7fc;
+    --surface: #ffffff;
+    --line: #dbe7f5;
+    --surface-muted: #f8fafc;
+    --surface-elevated: rgba(255,255,255,0.82);
+    --brand-900: #0f2a53;
+    --brand-700: #1f4f9a;
+    --text: #0f172a;
+    --text-soft: #64748b;
+    color-scheme: light;
+  }
+
+  .login-theme-checkbox:checked ~ .login-shell {
+    --bg: #07111f;
+    --surface: #0f172a;
+    --line: #22304a;
+    --surface-muted: #111c33;
+    --surface-elevated: rgba(15, 23, 42, 0.86);
+    --brand-900: #1a3f7a;
+    --brand-700: #4f8cff;
+    --text: #e5eefc;
+    --text-soft: #8fa6c5;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 12% 12%, #dceaff 0%, rgba(220,234,255,0) 42%),
+      radial-gradient(circle at 90% 90%, #e4f7ff 0%, rgba(228,247,255,0) 38%),
+      var(--bg);
+    padding: 1rem;
+  }
+
+  .login-theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--text-soft);
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .login-theme-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .login-theme-track {
+    width: 50px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(148,163,184,0.4);
+    padding: 3px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 6px 16px rgba(15,23,42,0.12);
+  }
+
+  .login-theme-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff 0%, #dbeafe 100%);
+    transform: translateX(0);
+    transition: transform 0.28s ease, background 0.28s ease;
+  }
+
+  .login-theme-checkbox:checked ~ .login-shell .login-theme-track {
+    background: rgba(122, 184, 255, 0.2);
+    border-color: rgba(122, 184, 255, 0.35);
+  }
+
+  .login-theme-checkbox:checked ~ .login-shell .login-theme-thumb {
+    transform: translateX(22px);
+    background: linear-gradient(135deg, #ffd86b 0%, #ffb347 100%);
+  }
+
+  .page-wrapper {
+    display: flex;
+    width: 100%;
+    max-width: 960px;
+    min-height: 550px;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: 0 22px 60px rgba(15, 23, 42, 0.16);
+    background: linear-gradient(180deg, var(--surface-elevated) 0%, var(--surface) 100%);
+  }
+
+  .sidebar {
+    width: 44%;
+    background: linear-gradient(160deg, var(--brand-900) 0%, #123567 58%, #1e4a8c 100%);
+    padding: 3rem 2.4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    right: -130px;
+    bottom: -130px;
+    background: radial-gradient(circle, rgba(126,194,255,0.45) 0%, rgba(126,194,255,0) 65%);
+    animation: float-orb 16s ease-in-out infinite;
+  }
+
+  .sidebar-logo {
+    width: 54px;
+    height: 54px;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.24);
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .sidebar h2 {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.28;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .sidebar p {
+    color: rgba(255,255,255,0.72);
+    font-size: 0.86rem;
+    line-height: 1.72;
+  }
+
+  .sidebar-divider {
+    width: 44px;
+    height: 3px;
+    background: rgba(255,255,255,0.34);
+    border-radius: 4px;
+    margin: 1.5rem 0;
+  }
+
+  .sidebar-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.62rem;
+    margin-top: 1.45rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .sidebar-info span {
+    color: rgba(255,255,255,0.72);
+    font-size: 0.79rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sidebar-info span::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.45);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .form-side {
+    flex: 1;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, var(--surface) 100%);
+    padding: 3rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .form-side h1 {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    font-size: 0.86rem;
+    color: var(--text-soft);
+    margin-bottom: 2rem;
+  }
+
+  .form-group { margin-bottom: 1.1rem; }
+
+  label {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.42rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  input[type=text], input[type=password] {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--text);
+    -webkit-text-fill-color: var(--text);
+    caret-color: var(--text);
+    background: var(--surface-muted);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  }
+
+  input::placeholder {
+    color: var(--text-soft);
+    opacity: 0.9;
+  }
+
+  input:focus {
+    border-color: #2f80ed;
+    box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.14);
+    background: #fff;
+    color: var(--text);
+    -webkit-text-fill-color: var(--text);
+  }
+
+  .btn-login {
+    width: 100%;
+    padding: 0.72rem;
+    background: linear-gradient(135deg, var(--brand-700) 0%, #1663c7 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    cursor: pointer;
+    margin-top: 0.55rem;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 24px rgba(31, 79, 154, 0.24);
+  }
+
+  .btn-login:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(31, 79, 154, 0.3);
+  }
+
+  .error-msg {
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.28);
+    border-radius: 10px;
+    padding: 0.72rem 0.9rem;
+    font-size: 0.84rem;
+    color: #ef4444;
+    margin-bottom: 1.1rem;
+  }
+
+  .footer-note {
+    margin-top: 1.5rem;
+    font-size: 0.76rem;
+    color: var(--text-soft);
+    text-align: center;
+  }
+
+  @keyframes float-orb {
+    0%, 100% { transform: translate3d(0,0,0) scale(1); }
+    50% { transform: translate3d(18px, -12px, 0) scale(1.04); }
+  }
+
+  @keyframes soft-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page-wrapper { animation: soft-rise 420ms ease; }
+
+  .sidebar-logo { box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+
+  .btn-login:hover { filter: brightness(1.04); }
+
+  .login-shell {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .login-shell .page-wrapper {
+    position: relative;
+    z-index: 1;
+  }
+
+  .login-shell .form-side {
+    color: var(--text);
+  }
+
+  .login-shell .login-theme-toggle {
+    position: fixed;
+  }
+
+  .login-shell .form-side input,
+  .login-shell .form-side input:focus {
+    color: var(--text);
+  }
+
+  .login-theme-checkbox:checked ~ .login-shell .login-theme-track {
+    background: rgba(122, 184, 255, 0.2);
+    border-color: rgba(122, 184, 255, 0.35);
+  }
+
+  .login-theme-checkbox:checked ~ .login-shell .login-theme-thumb {
+    transform: translateX(22px);
+    background: linear-gradient(135deg, #ffd86b 0%, #ffb347 100%);
+  }
+
+  .login-theme-checkbox:checked ~ .login-shell .form-side input,
+  .login-theme-checkbox:checked ~ .login-shell .form-side input:focus {
+    background: #0b1526;
+    border-color: #2a3c5f;
+    color: #f3f7ff;
+    -webkit-text-fill-color: #f3f7ff;
+    caret-color: #f3f7ff;
+  }
+
+  .login-theme-checkbox:checked ~ .login-shell .form-side input::placeholder {
+    color: #9fb4d6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .page-wrapper { flex-direction: column; max-width: 620px; min-height: auto; }
+    .sidebar { width: 100%; padding: 2rem; }
+    .form-side { padding: 2rem; }
+  }
+</style>
+</head>
+<body>
+<input class="login-theme-checkbox" id="login-theme-toggle" type="checkbox" aria-label="Toggle dark mode on login page">
+<div class="login-shell">
+  <label class="login-theme-toggle" for="login-theme-toggle">
+    <span class="login-theme-track"><span class="login-theme-thumb"></span></span>
+    <span>Theme</span>
+  </label>
+  <div class="page-wrapper">
+  <div class="sidebar">
+    <div class="sidebar-logo">🎓</div>
+    <h2>Student Management System</h2>
+    <div class="sidebar-divider"></div>
+    <p>Centralized academic portal for students, faculty, and administrative staff.</p>
+    <div class="sidebar-info">
+      <span>Student records &amp; grades</span>
+      <span>File submission portal</span>
+      <span>Faculty management</span>
+      <span>Academic administration</span>
+    </div>
+  </div>
+  <div class="form-side">
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in with your university credentials to continue</p>
+    {% if error %}
+    <div class="error-msg">{{ error }}</div>
+    {% endif %}
+    <form method="POST" action="/login" autocomplete="off">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Enter your username" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="btn-login">Sign In</button>
+    </form>
+    <p class="footer-note">University Academic Portal &copy; 2024. All rights reserved.</p>
+  </div>
+  </div>
+</div>
+</body>
+</html>

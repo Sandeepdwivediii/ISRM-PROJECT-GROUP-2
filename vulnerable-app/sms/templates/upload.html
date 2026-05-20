@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Documents{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Document Submissions</h1>
+  <p>Upload and manage academic documents and assignment submissions.</p>
+</div>
+
+<div class="layout-2col mb-5">
+
+  <div class="card">
+    <div class="card-title">Upload Document</div>
+    {% if message %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% endif %}
+    {# VULN-03: No file type validation – any extension accepted including .php .py .sh #}
+    {# VULN-08: Full server path returned in success message #}
+    <form method="POST" enctype="multipart/form-data" class="stack-form">
+      <div class="form-group">
+        <label>Select File</label>
+        <input type="file" name="file" class="w-100">
+      </div>
+      <p class="text-xs text-soft">Accepted formats: PDF, DOCX, XLSX, JPG, PNG</p>
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Download Document</div>
+    {# VULN-11: Path traversal – filename not sanitized #}
+    <form method="GET" action="/download" class="stack-form">
+      <div class="form-group">
+        <label>File Name</label>
+        <input type="text" name="file" placeholder="Enter filename to download">
+      </div>
+      <button type="submit" class="btn btn-outline">Download</button>
+    </form>
+  </div>
+
+</div>
+
+<div class="card">
+  <div class="card-title">Uploaded Documents</div>
+  {% if files %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Filename</th><th>Uploaded By</th><th>Date</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {% for f in files %}
+        <tr>
+          <td class="mono-sm">{{ f['filename'] }}</td>
+          <td>{{ f['uploader'] }}</td>
+          <td class="text-xs text-soft">{{ f['upload_ts'][:19] if f['upload_ts'] else '—' }}</td>
+          <td>
+            <a href="/download?file={{ f['filename'] }}" class="btn btn-outline btn-sm">Download</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-soft">No documents uploaded yet.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}System Diagnostics{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>System Diagnostics</h1>
+  <p>Network connectivity and system health checks.</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Network Ping Test</div>
+  {# VULN-10: host value concatenated directly into shell command via f-string + shell=True #}
+  <form method="POST" class="flex gap-4 items-end flex-wrap">
+    <div class="form-group flex-1 min-w-220">
+      <label>Target Hostname or IP Address</label>
+      <input type="text" name="host" value="{{ request.form.get('host','') }}" placeholder="e.g. 127.0.0.1">
+    </div>
+    <button type="submit" class="btn btn-primary">Run Test</button>
+  </form>
+
+  {% if cmd %}
+  <div class="mt-5">
+    <p class="text-xs text-soft mb-4"><strong>COMMAND EXECUTED</strong></p>
+    <div class="code-block mt-0">{{ cmd }}</div>
+  </div>
+  {% endif %}
+
+  {% if output %}
+  <div class="mt-4">
+    <p class="text-xs text-soft mb-4"><strong>OUTPUT</strong></p>
+    {# VULN-08: Raw OS command output (may include /etc/passwd) returned to browser #}
+    <div class="code-block mt-0 output-scroll">{{ output }}</div>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}
