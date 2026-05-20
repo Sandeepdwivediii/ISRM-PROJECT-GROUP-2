@@ -1114,6 +1114,6 @@ The main lesson is simple:
 <div align="center">
 
 **Security Assessment and Control Design for a Web-Based Student Management System**  
-Built as an academic security-engineering project using Flask, SQLite, STRIDE, ALE, Bandit, and DevSecOps controls.
+
 
 </div>
